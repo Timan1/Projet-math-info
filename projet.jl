@@ -80,6 +80,7 @@ distance::Matrix{Int64} = zeros(Int64, size(graph,1), size(graph,2) )
 par::Matrix{Tuple{Int64,Int64}} =Matrix{Tuple{Int64,Int64}}(undef, size(graph,1), size(graph,2) )
 a::Vector{Tuple{Int64,Int64}} = [ depart ]
 argmin::Tuple{Int64,Int64} = depart
+nb::Int64 = 1
 while argmin !=arrivee
 println("feuilles : $a")
 argmin = a[1]
@@ -105,13 +106,23 @@ end
 end
 deleteat!( a, indmin )
 end
-return distance, par
+for i in distance
+  if i > 0
+    nb+=1
+  end
+end
+return distance, par, nb
 end
 
 function main()
 m = lire_fichier("test.map")
-d,p = Dijkstra(m, (1,2), (5,1) )
-println(d[5,1])
-println(d)
+d,par,n = Dijkstra(m, (1,2), (5,1) )
+println("distance : $(d[5,1])" )
+println("états visités : $n")
+p::Tuple{Int64, Int64} = (5,1)
+while p != (1,2)
+    print("$p <- ")
+    p = par[p[1], p[2]]
 end
-
+println("$p")
+end
