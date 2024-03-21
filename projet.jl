@@ -18,6 +18,8 @@ function valuation(a::Char, b::Char )
                           return 0
   elseif  a=='C' && b=='C'
                             return 0
+  else
+    throw("Test : $a et $b")
   end
   end
   #Fonction pour lire un fichier
@@ -65,12 +67,12 @@ function voisin(x::Tuple{Int64,Int64},graph::Matrix{Char})
 	   push!(v,  (x[1] ,x[2]-1))
 	end	 
 	end
-	if x[1] < size(graph, 2)
+	if x[2] < size(graph, 2)
 	if valuation(graph[x[1], x[2]],graph[ x[1], (x[2]+1) ]) !=0  
 	 push!(v, (x[1], x[2]+1))
 	end
 	end
-	 
+	return v
 end
 	 
 function Dijkstra(graph::Matrix{Char},depart::Tuple{Int64,Int64}, arrivee::Tuple{Int64,Int64})
@@ -79,7 +81,8 @@ par::Matrix{Tuple{Int64,Int64}} =Matrix{Tuple{Int64,Int64}}(undef, size(graph,1)
 a::Vector{Tuple{Int64,Int64}} = [ depart ]
 argmin::Tuple{Int64,Int64} = depart
 while argmin !=arrivee
-println(a)
+println("feuilles : $a")
+argmin = a[1]
 min = distance[a[1][1], a[1][2]]
 indmin = 1
 for j in 1:length(a)
@@ -88,10 +91,10 @@ if distance[a[j][1], a[j][2]] < min
 	argmin = a[j]
 	indmin = j
 end
-println(argmin)
 end
+println("dev : $argmin")
 for v in voisin(argmin ,graph)
-if distance[v[1], v[2]] == 0
+if distance[v[1], v[2]] == 0 && v != depart
 distance[v[1], v[2]] = distance[argmin[1], argmin[2]] + valuation( graph[argmin[1], argmin[2]], graph[v[1],v[2]] )
 par[v[1],v[2]] = argmin
 push!(a, v)
@@ -109,4 +112,6 @@ function main()
 m = lire_fichier("test.map")
 d,p = Dijkstra(m, (1,2), (5,1) )
 println(d[5,1])
+println(d)
 end
+
